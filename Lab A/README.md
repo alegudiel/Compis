@@ -12,12 +12,12 @@
 
 ## Evaluación:
 
-* Validación de errores para expresión regular y balanceo de 𝑟 [x]
+* Validación de errores para expresión regular y balanceo de 𝑟                                   [❌]
 
-* Conversión de 𝑟 de infix a postfix para producción de 𝑟' en postfix [x]
+* Conversión de 𝑟 de infix a postfix para producción de 𝑟' en postfix                            [❌]
 
-* Implementación del algoritmo de Construcción de Thompson con base en 𝑟' [x]
+* Implementación del algoritmo de Construcción de Thompson con base en 𝑟'                        [❌]   
 
-* Mostrar en pantalla el listado solicitado de descripciones sobre los AFN generados [x]
+* Mostrar en pantalla el listado solicitado de descripciones sobre los AFN generados                                                                                       [❌]
 
-* Ejercicios Pre-Laboratorio [x]
+* Ejercicios Pre-Laboratorio                                                                     [❌]
