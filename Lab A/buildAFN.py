@@ -25,36 +25,22 @@ def thompsonConstruction(postfixVal):
     return stack.pop()
 
 
+
+
+
 def printNFA(nfa):
-    # Obtenemos los estados del NFA
-    states = sorted(list(set().union(nfa.start_state.epsilon_closure(), [nfa.start_state]))) + list(nfa.final_states)
-
-    # Obtenemos las transiciones del NFA
-    transitions = sorted(list(set([t for s in states for t in nfa.get_transitions(s)]).difference(set([None]))))
-
-
-
-    # Imprimimos las columnas de la tabla
-    print(f"{'':^6}|{'|'.join([str(t).center(6) for t in transitions])}|")
-
-    # Imprimimos la línea separadora
-    print(f"{'':-^7}+{'+'.join(['-'*6 for _ in transitions])}+")
-
-    # Imprimimos las filas de la tabla
-    for s in states:
-        # Imprimimos el estado actual
-        print(f"{str(s):^6}|", end="")
-        # Imprimimos las transiciones correspondientes al estado actual
-        for t in transitions:
-            targets = sorted([tr.target for tr in nfa.get_transitions(s) if tr.symbol == t])
-            if targets:
-                print(f"{', '.join([str(tg) for tg in targets]).center(6)}|", end="")
-            else:
-                print(f"{'':^6}|", end="")
-        print()
-
-    # Imprimimos la línea separadora
-    print(f"{'':-^7}+{'+'.join(['-'*6 for _ in transitions])}+")
+    """Imprime el NFA"""
+    print("NFA:")
+    print("Start state:", nfa.start_state)
+    # print("Final states:", nfa.final_states)
+    print("States:")
+    for state in nfa.states:
+        print(state)
+        for symbol, next_states in state.transitions.items():
+            for next_state in next_states:
+                print(f"\t{symbol} -> {next_state}")
+        for epsilon_state in state.epsilon_transitions:
+            print(f"\tɛ -> {epsilon_state}")
 
 
 # postfixVal = 'ab.*ab.*'

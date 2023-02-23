@@ -1,4 +1,4 @@
-# Representar los estados del AFN de Thompson
+# # Representar los estados del AFN de Thompson
 from collections import deque
 
 class State:
@@ -43,11 +43,25 @@ class NFA:
     def __init__(self, start_state, final_states):
         self.start_state = start_state
         self.final_states = final_states
-
-    def get_transitions(self, state):
-        """Obtiene las transiciones de un estado"""
-        return self.start_state.transitions.get(state, [])
+        self.states = self.get_states()
     
+    def get_states(self):
+        """Obtiene todos los estados del NFA"""
+        closure = self.start_state.epsilon_closure()
+        states = set()
+        queue = deque(closure)
+        while queue:
+            current_state = queue.popleft()
+            states.add(current_state)
+            for symbol, next_states in current_state.transitions.items():
+                for next_state in next_states:
+                    next_closure = next_state.epsilon_closure()
+                    for state in next_closure:
+                        if state not in closure:
+                            closure.add(state)
+                            queue.append(state)
+        return states
+
     @staticmethod
     def concatenate(nfa1, nfa2):
         """Realiza la concatenación de dos NFA"""
@@ -75,3 +89,4 @@ class NFA:
             state.add_epsilon_transition(nfa.start_state)
             state.add_epsilon_transition(final_state)
         return NFA(start_state, {final_state})
+
