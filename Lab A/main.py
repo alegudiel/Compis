@@ -15,11 +15,19 @@ Especificación del funcionamiento del programa
     o Por cada AFN (NFA) generado a partir de 𝑟 :
         ▪ una imagen con el Grafo correspondiente para el AF generado, mostrando el estado inicial, los estados adicionales, el estado de
 """
+###### ----> Ejemplos del pre-lab
+# print(infixToPostfix('ab ∗ ab ∗')) ### ---> postfix ab.*ab.*
+# print(infixToPostfix('0? (1? )? 0 ∗')) ### ---> postfix 0?1?  ?0  ∗
+# print(infixToPostfix('(a*|b*)c')) ### ---> postfix a*b*|c
+# print(infixToPostfix('(b|b)*abb(a|b)*')) ### ---> postfix bb|abbab|**
+# print(infixToPostfix('(a|ε)b(a+)c?')) ### ---> postfix a|εba+c?
+# print(infixToPostfix('(a|b)*a(a|b)(a|b)')) ### ---> postfix ab|aab|ab|*
+
 
 # Importamos las librerías necesarias.
 from validations import checkForErrors
 from evaluateRegex import infixToPostfix
-# from afnBuild import *
+from buildAFN import thompsonConstruction, printNFA
 
 # Pedimos la expresión regular (regex) al usuario.
 r = input("Ingrese la expresión regular: ")
@@ -30,13 +38,19 @@ if checkForErrors(r) == []:
     # Convertimos a postfix en caso de que no haya errores.
     postfixValue = infixToPostfix(r)
     print("La expresión regular en postfix es: ", postfixValue)
+    # Convertimos de postfix a NFA
+    nfaValue = thompsonConstruction(postfixValue)
+    print("El NFA es: ", nfaValue)
+    # Mostramos el NFA
+    printNFA(nfaValue)
+
+    
+        
+
+
 else:
     print("Los errores encontrados son ---> ", checkedExp)
 
-# Convertimos de postfix a NFA
-# nfaValue = postfixToAFN(postfixVal)
-    # Mostramos el NFA
-# printAutomaton(str(nfaValue))
 
 # Mostramos el grafo del NFA
 

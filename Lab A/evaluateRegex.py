@@ -77,14 +77,6 @@ def infixToPostfix(r):
     return ''.join(output)
 
 
-###### ----> Ejemplos del pre-lab
-# print(infixToPostfix('ab ∗ ab ∗')) ### ---> postfix ab.*ab.*
-# print(infixToPostfix('0? (1? )? 0 ∗')) ### ---> postfix 0?1?  ?0  ∗
-# print(infixToPostfix('(a*|b*)c')) ### ---> postfix a*b*|c
-# print(infixToPostfix('(b|b)*abb(a|b)*')) ### ---> postfix bb|abbab|**
-# print(infixToPostfix('(a|ε)b(a+)c?')) ### ---> postfix a|εba+c?
-# print(infixToPostfix('(a|b)*a(a|b)(a|b)')) ### ---> postfix ab|aab|ab|*
-
 # --->probando el validador de errores
 # regex = input("Ingrese la expresión regular: ")
 # checkedExp = checkForErrors(regex)
