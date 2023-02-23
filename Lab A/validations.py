@@ -50,7 +50,7 @@ def hasInvalidEscape(r):
 
 # Función que determina si la expresión regular tiene caracteres no válidos.
 def hasValidCharacters(r):
-    return bool(re.match(r'^[\w\[\]{}()∗*|.?+ɛ\\]*$', r))
+    return bool(re.match(r'[()∗*|.?+ɛ]|(?:\\.|[^\w()?+*∗|])+|[\wɛ]', r))
 
 def checkForErrors(r):
     errors = []

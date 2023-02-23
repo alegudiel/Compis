@@ -14,7 +14,7 @@
 
 * Validación de errores para expresión regular y balanceo de 𝑟                                   [✅]
 
-* Conversión de 𝑟 de infix a postfix para producción de 𝑟' en postfix                            [❌]
+* Conversión de 𝑟 de infix a postfix para producción de 𝑟' en postfix                            [✅]
 
 * Implementación del algoritmo de Construcción de Thompson con base en 𝑟'                        [❌]   
 
