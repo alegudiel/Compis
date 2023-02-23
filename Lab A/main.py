@@ -17,15 +17,21 @@ Especificación del funcionamiento del programa
 """
 
 # Importamos las librerías necesarias.
+from validations import checkForErrors
 from evaluateRegex import infixToPostfix
 # from afnBuild import *
 
 # Pedimos la expresión regular (regex) al usuario.
 r = input("Ingrese la expresión regular: ")
 
-# Convertimos a postfix
-postfixVal = infixToPostfix(r)
-print("La expresión regular en notación postfix es: ", postfixVal)
+# Revisamos que la expresión regular sea válida.
+checkedExp = checkForErrors(r)
+if checkForErrors(r) == []:
+    # Convertimos a postfix en caso de que no haya errores.
+    postfixValue = infixToPostfix(r)
+    print("La expresión regular en postfix es: ", postfixValue)
+else:
+    print("Los errores encontrados son ---> ", checkedExp)
 
 # Convertimos de postfix a NFA
 # nfaValue = postfixToAFN(postfixVal)
