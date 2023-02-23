@@ -12,7 +12,7 @@
 
 ## Evaluación:
 
-* Validación de errores para expresión regular y balanceo de 𝑟                                   [❌]
+* Validación de errores para expresión regular y balanceo de 𝑟                                   [✅]
 
 * Conversión de 𝑟 de infix a postfix para producción de 𝑟' en postfix                            [❌]
 
