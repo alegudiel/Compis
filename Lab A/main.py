@@ -26,25 +26,36 @@ Especificación del funcionamiento del programa
 
 # Importamos las librerías necesarias.
 from validations import checkForErrors
-from evaluateRegex import infixToPostfix
+from formating import cleanRegex
+from toPostfix import infixToPostfix
 from buildAFN import thompsonConstruction, printNFA
 from showAFNGraph import nfaGraph
 
 # Pedimos la expresión regular (regex) al usuario.
 print('---------------------------------------------------')
 r = input("Ingrese la expresión regular: ")
+print('---------------------------------------------------')
+print("La expresión regular ingresada es:", r)
 
 # Revisamos que la expresión regular sea válida.
 checkedExp = checkForErrors(r)
 if checkForErrors(r) == []:
+    # Si no hay errores, procedemos a formatear la expresión regular.
+    cleanedExp = cleanRegex(r)
+
+    print("--->Se validó la expresión...")
     print('---------------------------------------------------')
-    print("No se encontraron errores en la expresión regular:", r)
+    print("--->La expresión regular se está formateando...")
     print('---------------------------------------------------')
-    print("--->Convertimos de infix a postfix...")
+    print("La expresión regular formateada es:", cleanedExp)
     print('---------------------------------------------------')
 
     # Convertimos a postfix en caso de que no haya errores.
-    postfixValue = infixToPostfix(r)
+    print("--->Convertimos a postfix...")
+    print('---------------------------------------------------')
+    ########### para descomentar una vez que se implemente la función cleanRegex
+    postfixValue = infixToPostfix(cleanedExp)
+    # postfixValue = infixToPostfix(r)
     print("La expresión regular en postfix es:", postfixValue)
     print('---------------------------------------------------')
 

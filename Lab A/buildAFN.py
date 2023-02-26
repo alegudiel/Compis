@@ -18,11 +18,19 @@ def thompsonConstruction(postfixVal):
         # Si el token es una barra vertical, pop los dos últimos NFA's de la pila y alternarlos
         elif token == '|':
             nfa2 = stack.pop()
+            # fix error: indexerror: pop from an empty deque
+            if len(stack) == 0:
+                stack.append(nfa2)
+                continue
             nfa1 = stack.pop()
             stack.append(NFA.alternate(nfa1, nfa2))
         # Si el token es un punto, pop los dos últimos NFA's de la pila y concatenarlos
         elif token == '.':
             nfa2 = stack.pop()
+            # fix error: indexerror: pop from an empty deque
+            if len(stack) == 0:
+                stack.append(nfa2)
+                continue
             nfa1 = stack.pop()
             stack.append(NFA.concatenate(nfa1, nfa2))
         # Si el token es un asterisco, pop el último NFA de la pila y aplicar la clausura de Kleene
@@ -32,8 +40,6 @@ def thompsonConstruction(postfixVal):
 
     # Al final, la única cosa en la pila debería ser el NFA final
     return stack.pop()
-
-
 
 def printNFA(nfa):
     """Imprime el NFA"""
