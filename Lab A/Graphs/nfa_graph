@@ -1,24 +1,32 @@
 // NFA
 digraph {
-	rankdir=LR
-	node [shape=doublecircle]
-	s11
+	rankdir=LR size="10, 34"
 	node [shape=circle]
-	start [shape=point]
-	start -> q10
-	q7 -> q7 [label="ε" style=dashed]
-	q8 -> q9 [label=b]
-	q8 -> q11 [label="ε" style=dashed]
-	q8 -> q8 [label="ε" style=dashed]
-	q8 -> q6 [label="ε" style=dashed]
-	q10 -> q11 [label="ε" style=dashed]
-	q10 -> q8 [label="ε" style=dashed]
-	q10 -> q10 [label="ε" style=dashed]
-	q10 -> q6 [label="ε" style=dashed]
-	q9 -> q9 [label="ε" style=dashed]
-	q11 -> q11 [label="ε" style=dashed]
-	q6 -> q7 [label=a]
-	q6 -> q11 [label="ε" style=dashed]
-	q6 -> q8 [label="ε" style=dashed]
-	q6 -> q6 [label="ε" style=dashed]
+	start [shape=doublecircle]
+	9 [shape=doublecircle]
+	2
+	10
+	1
+	5
+	3
+	0
+	7
+	6
+	4
+	start -> 8 [label="ε"]
+	0 -> 1 [label=a]
+	0 -> 0 [label="ε"]
+	0 -> 3 [label="ε"]
+	2 -> 0 [label="ε"]
+	2 -> 3 [label="ε"]
+	3 -> 9 [label="ε"]
+	4 -> 5 [label=b]
+	4 -> 4 [label="ε"]
+	4 -> 7 [label="ε"]
+	6 -> 4 [label="ε"]
+	6 -> 7 [label="ε"]
+	7 -> 9 [label="ε"]
+	8 -> 2 [label="ε"]
+	8 -> 6 [label="ε"]
+	9 -> 10 [label=c]
 }
