@@ -5,7 +5,7 @@ import re
 from collections import deque
 from validations import *
 
-# Funcion que determina si un caracter es un operador.
+#### Funcion que determina si un caracter es un operador.
 def infixToPostfix(r):
     # Precendencia de operadores
     prec = {
@@ -16,18 +16,17 @@ def infixToPostfix(r):
         '*': 4,
         '∗': 4,
         '+': 4,
-        '?': 5,
-        '^': 6,
-        'ε': 7,
+        '^': 5,
+        'ε': 6,
     }
 
     # Agregar entradas para cada letra
     for letter in 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789':
-        prec[letter] = 8
+        prec[letter] = 7
 
     # Convertir la expresión regular a una lista de tokens
-    #tokens = re.findall(r'[()∗*|.+?ɛ]|(?:\\.|[^\w()?+*∗|])+|[\wɛ]+', r)
-    tokens = re.findall(r'[()∗*|.?+ɛ]|(?:\\.|[^\w()?+*∗|])+|[\wɛ]', r)
+    #tokens = re.findall(r'[()∗|.+?ɛ]|(?:\\.|[^\w()?+∗|])+|[\wɛ]+', r)
+    tokens = re.findall(r'[()∗|.?+ɛ]|(?:\\.|[^\w()?+∗|])+|[\wɛ]', r)
 
     # Deque para almacenar la salida y la pila de operadores
     output = deque()
@@ -73,14 +72,11 @@ def infixToPostfix(r):
     while operatorStack:
         output.append(operatorStack.pop())
 
+    if len(output) > 1 and output[-2] not in {'('} and output[-1] not in {')', '|'}:
+        output += '.'
+    if output[-1] != ')' and len(operatorStack) != 0:
+        output.append('.')
+
+
     # Convertir la salida de la cola doble a una cadena
     return ''.join(output)
-
-
-# --->probando el validador de errores
-# regex = input("Ingrese la expresión regular: ")
-# checkedExp = checkForErrors(regex)
-# if checkForErrors(regex) == []:
-#     print(infixToPostfix(regex))
-# else:
-#     print("Los errores encontrados son: ", checkedExp)

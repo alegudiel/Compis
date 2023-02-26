@@ -31,34 +31,40 @@ from buildAFN import thompsonConstruction, printNFA
 from showAFNGraph import nfaGraph
 
 # Pedimos la expresión regular (regex) al usuario.
+print('---------------------------------------------------')
 r = input("Ingrese la expresión regular: ")
 
 # Revisamos que la expresión regular sea válida.
 checkedExp = checkForErrors(r)
 if checkForErrors(r) == []:
+    print('---------------------------------------------------')
+    print("No se encontraron errores en la expresión regular:", r)
+    print('---------------------------------------------------')
+    print("--->Convertimos de infix a postfix...")
+    print('---------------------------------------------------')
+
     # Convertimos a postfix en caso de que no haya errores.
     postfixValue = infixToPostfix(r)
-    print("La expresión regular en postfix es: ", postfixValue)
+    print("La expresión regular en postfix es:", postfixValue)
+    print('---------------------------------------------------')
+
     # Convertimos de postfix a NFA
+    print('--->Convertimos de postfix a NFA...')
     nfaValue = thompsonConstruction(postfixValue)
     
     # Mostramos el NFA
+    print('---------------------------------------------------')
     printNFA(nfaValue)
     
     # Mostramos el grafo del NFA
+    print('---------------------------------------------------')
+    print("--->Convertimos el NFA a un grafo...")
+    print('---------------------------------------------------')
     nfaGraph(nfaValue)
-
-    
-
-
-    
-        
 
 
 else:
     print("Los errores encontrados son ---> ", checkedExp)
 
 
-
-# Mostramos el grafo del NFA reducido
 
