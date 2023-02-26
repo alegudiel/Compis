@@ -11,7 +11,7 @@ def cleanRegex(regex):
         formatingRegex += regex[i]
 
     # Reemplazar las llaves por símbolos de repetición
-    formatingRegex = formatingRegex.replace("{", "{1,")
+    formatingRegex = formatingRegex.replace("{", "{,")
     formatingRegex = formatingRegex.replace(",}", ",}")
     formatingRegex = formatingRegex.replace(",", "}")
     formatingRegex = formatingRegex.replace("}", "}")

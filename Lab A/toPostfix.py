@@ -99,7 +99,7 @@ def infixToPostfix(r):
         prec[letter] = 7
 
     # Formatear la expresión regular
-    r = cleanRegex(r)
+    # r = cleanRegex(r)
 
     # Convertir la expresión regular a una lista de tokens
     tokens = list(r)
