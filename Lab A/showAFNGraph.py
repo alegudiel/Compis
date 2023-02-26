@@ -2,23 +2,29 @@ from graphviz import Digraph
 
 def nfaGraph(nfa):
     dot = Digraph(comment='NFA')
-    dot.attr(rankdir='LR')
-    dot.attr('node', shape='doublecircle')
-    for state in nfa.final_states:
-        state_prefix = 's' # Aquí se define el prefijo personalizado
-        dot.node(state_prefix + str(state.id))
+    dot.attr(rankdir='LR', size='10, 34')
     dot.attr('node', shape='circle')
-    dot.node('start', shape='point')
-    dot.edge('start', 'q' + str(nfa.start_state.id))
+    
+    # Etiquetamos los nodos de inicio y final
+    dot.node('start', shape='doublecircle')
+    for state in nfa.final_states:
+        dot.node(str(state.id), shape='doublecircle')
+    
+    # Etiquetamos los demás nodos por su identificador numérico
     for state in nfa.states:
+        if state != nfa.start_state and state not in nfa.final_states:
+            dot.node(str(state.id))
+    
+    # Agregamos las transiciones
+    dot.edge('start', str(nfa.start_state.id), label='ε')
+    for state in sorted(nfa.states, key=lambda x: x.id):
         for symbol, next_states in state.transitions.items():
             for next_state in next_states:
-                dot.edge('q' + str(state.id), 'q' + str(next_state.id), label=symbol)
-        for eps_state in state.epsilon_closure():
-            if eps_state in nfa.final_states:
-                dot.edge('q' + str(state.id), 'q' + str(eps_state.id), label='ε', style='dashed')
-            else:
-                dot.edge('q' + str(state.id), 'q' + str(eps_state.id), label='ε', style='dashed')
+                dot.edge(str(state.id), str(next_state.id), label=symbol)
+        for epsilon_state in state.epsilon_transitions:
+            dot.edge(str(state.id), str(epsilon_state.id), label='ε')
+            
     dot.format = 'png'
     dot.render('./Lab A/Graphs/nfa_graph', view=True)
+
 
