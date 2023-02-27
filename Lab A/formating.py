@@ -1,19 +1,28 @@
-def cleanRegex(regex):
-    """
-    Formatea una expresión regular para ser procesada a postfix.
-    """
+def cleanRegex(r):
+    # Eliminar espacios en blanco
+    r = r.replace(" ", "")
 
-    # Agregar un punto explícito en concatenaciones implícitas
+    # Reemplazar el operador '?' por el símbolo de epsilon
+    r = r.replace("?", "ε")
+
+    # Manejar el operador '+' como una operación kleene
     formatingRegex = ""
-    for i in range(len(regex)):
-        if i > 0 and regex[i] not in "|*+)" and regex[i-1] not in "|*+(":
+    i = 0
+    while i < len(r):
+        # Manejar el operador '+'
+        if r[i] == "+":
+            # Revisar si el caracter anterior es un paréntesis derecho o un caracter
+            prev_char = formatingRegex[-1] if len(formatingRegex) > 0 else None
+            if prev_char == ")" or prev_char.isalpha():
+                formatingRegex += "*"
+            # Agregar el caracter actual
+            formatingRegex += r[i]
+            i += 1
+        # Agregar el operador '.' si es necesario
+        elif i > 0 and r[i] not in "|*+)" and r[i-1] not in "|*+(":
             formatingRegex += "."
-        formatingRegex += regex[i]
-
-    # Reemplazar las llaves por símbolos de repetición
-    formatingRegex = formatingRegex.replace("{", "{,")
-    formatingRegex = formatingRegex.replace(",}", ",}")
-    formatingRegex = formatingRegex.replace(",", "}")
-    formatingRegex = formatingRegex.replace("}", "}")
+        # Agregar el caracter actual
+        formatingRegex += r[i]
+        i += 1
 
     return formatingRegex
