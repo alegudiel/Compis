@@ -2,31 +2,34 @@
 digraph {
 	rankdir=LR size="10, 34"
 	node [shape=circle]
-	10 [shape=doublecircle]
-	11 [shape=doublecircle]
-	9
-	0
-	8
-	1
-	7
-	2
-	4
+	7 [shape=doublecircle]
+	16 [shape=doublecircle]
+	14 [shape=doublecircle]
 	6
-	3
 	5
-	0 -> 1 [label=a]
-	0 -> 2 [label="ε"]
-	2 -> 3 [label=b]
-	2 -> 0 [label="ε"]
-	2 -> 5 [label="ε"]
-	4 -> 0 [label="ε"]
-	4 -> 5 [label="ε"]
-	5 -> 6 [label="ε"]
-	6 -> 7 [label=a]
-	6 -> 8 [label="ε"]
-	8 -> 9 [label=b]
-	8 -> 4 [label="ε"]
-	8 -> 11 [label="ε"]
-	10 -> 4 [label="ε"]
-	10 -> 11 [label="ε"]
+	12
+	10
+	11
+	17
+	13
+	9
+	8
+	18
+	15
+	5 -> 6 [label=a]
+	5 -> 5 [label="ε"]
+	5 -> 8 [label="ε"]
+	7 -> 5 [label="ε"]
+	7 -> 8 [label="ε"]
+	8 -> 13 [label="ε"]
+	9 -> 10 [label=a]
+	9 -> 18 [label="ε"]
+	11 -> 12 [label=b]
+	11 -> 18 [label="ε"]
+	13 -> 9 [label="ε"]
+	13 -> 11 [label="ε"]
+	14 -> 15 [label=a]
+	16 -> 17 [label=b]
+	18 -> 16 [label="ε"]
+	18 -> 14 [label="ε"]
 }
