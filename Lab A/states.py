@@ -62,6 +62,19 @@ class State:
         for state in self.epsilon_transitions:
             epsilon_transitions.append(state)
         return epsilon_transitions
+    
+    def get_acceptance_states(self):
+        """Devuelve los estados de aceptación alcanzables desde este estado"""
+        acceptance_states = []
+        queue = deque([self])
+        while queue:
+            current_state = queue.popleft()
+            if current_state.is_final_state():
+                acceptance_states.append(current_state)
+            for symbol, states in current_state.transitions.items():
+                for state in states:
+                    queue.append(state)
+        return acceptance_states
 
 class NFA:
     """Clase para representar un NFA"""

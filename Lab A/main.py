@@ -16,17 +16,18 @@ Especificación del funcionamiento del programa
         ▪ una imagen con el Grafo correspondiente para el AF generado, mostrando el estado inicial, los estados adicionales, el estado de
 """
 ###### ----> Ejemplos del pre-lab
-# print(infixToPostfix('ab ∗ ab ∗')) ### ---> postfix ab.*ab.*
-# print(infixToPostfix('0? (1? )? 0 ∗')) ### ---> postfix 0?1?  ?0  ∗
-# print(infixToPostfix('(a*|b*)c')) ### ---> postfix a*b*|c
-# print(infixToPostfix('(b|b)*abb(a|b)*')) ### ---> postfix bb|abbab|**
-# print(infixToPostfix('(a|ε)b(a+)c?')) ### ---> postfix a|εba+c?
-# print(infixToPostfix('(a|b)*a(a|b)(a|b)')) ### ---> postfix ab|aab|ab|*
+# print(infixToPostfix('ab ∗ ab ∗'))
+# print(infixToPostfix('0? (1? )? 0 ∗')) 
+# print(infixToPostfix('(a*|b*)c')) 
+# print(infixToPostfix('(b|b)*abb(a|b)*')) 
+# print(infixToPostfix('(a|ε)b(a+)c?'))
+# print(infixToPostfix('(a|b)*a(a|b)(a|b)'))
 
 
 # Importamos las librerías necesarias.
 from validations import checkForErrors
-from evaluateRegex import infixToPostfix
+from formating import cleanRegex
+from toPostfix import infixToPostfix
 from buildAFN import thompsonConstruction, printNFA
 from showAFNGraph import nfaGraph
 
@@ -36,15 +37,21 @@ r = input("Ingrese la expresión regular: ")
 
 # Revisamos que la expresión regular sea válida.
 checkedExp = checkForErrors(r)
-if checkForErrors(r) == []:
+if checkedExp == []:
     print('---------------------------------------------------')
-    print("No se encontraron errores en la expresión regular:", r)
+    print("--->La expresión regular ingresada es válida...")
     print('---------------------------------------------------')
-    print("--->Convertimos de infix a postfix...")
+    # Si no hay errores, procedemos a formatear la expresión regular.
+    print("--->La expresión regular se está formateando...")
+    cleanedExp = cleanRegex(r)
+    print('---------------------------------------------------')
+    print("La expresión regular formateada es:", cleanedExp)
     print('---------------------------------------------------')
 
-    # Convertimos a postfix en caso de que no haya errores.
-    postfixValue = infixToPostfix(r)
+    # Convertimos a postfix una vez se haya formateado la expresión regular.
+    print("--->Convertimos a postfix...")
+    postfixValue = infixToPostfix(cleanedExp)
+    print('---------------------------------------------------')
     print("La expresión regular en postfix es:", postfixValue)
     print('---------------------------------------------------')
 

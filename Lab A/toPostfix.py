@@ -3,7 +3,6 @@
 # luego a notacion postfix usando el algoritmo Shunting Yard.
 import re
 from collections import deque
-from validations import *
 
 #### Funcion que determina si un caracter es un operador.
 def infixToPostfix(r):
@@ -38,7 +37,6 @@ def infixToPostfix(r):
             prec_token = prec[token]
             output.append(token)
         elif token == '∗':
-            output.append('.')
             output.append(token.replace('∗', '*'))
         elif token == 'ɛ':
             output.append(token)
@@ -62,8 +60,6 @@ def infixToPostfix(r):
             while operatorStack[-1] != '{':
                 output.append(operatorStack.pop())
             output.append(operatorStack.pop())
-        elif token == ' ':
-            continue
         else:
             while operatorStack and prec[operatorStack[-1]] >= prec[token]:
                 output.append(operatorStack.pop())
@@ -71,12 +67,6 @@ def infixToPostfix(r):
 
     while operatorStack:
         output.append(operatorStack.pop())
-
-    if len(output) > 1 and output[-2] not in {'('} and output[-1] not in {')', '|'}:
-        output += '.'
-    if output[-1] != ')' and len(operatorStack) != 0:
-        output.append('.')
-
 
     # Convertir la salida de la cola doble a una cadena
     return ''.join(output)

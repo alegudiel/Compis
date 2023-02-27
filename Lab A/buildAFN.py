@@ -1,5 +1,3 @@
-# Construir un AFN de Thompson a partir de una expresión regular en notación posfija
-
 import re
 from collections import deque
 from states import State, NFA
@@ -23,6 +21,10 @@ def thompsonConstruction(postfixVal):
         # Si el token es un punto, pop los dos últimos NFA's de la pila y concatenarlos
         elif token == '.':
             nfa2 = stack.pop()
+            # Si la pila está vacía, agregar el segundo NFA a la pila y continuar
+            if len(stack) == 0:
+                stack.append(nfa2)
+                continue
             nfa1 = stack.pop()
             stack.append(NFA.concatenate(nfa1, nfa2))
         # Si el token es un asterisco, pop el último NFA de la pila y aplicar la clausura de Kleene
@@ -32,8 +34,6 @@ def thompsonConstruction(postfixVal):
 
     # Al final, la única cosa en la pila debería ser el NFA final
     return stack.pop()
-
-
 
 def printNFA(nfa):
     """Imprime el NFA"""
