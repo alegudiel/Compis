@@ -1,52 +1,124 @@
-import re
-from collections import deque
-from states import State, NFA
+class State:
+    """
+    Clase que representa un estado en el autómata finito.
+    """
+    def __init__(self, transitions=None, is_final=False):
+        self.transitions = transitions or {}
+        self.is_final = is_final
 
-def thompsonConstruction(postfixVal):
-    # Crear una pila vacía
-    stack = deque()
 
-    # Recorrer cada token en la expresión regular en notación postfix
-    for token in postfixVal:
-        # Si el token es un caracter alfanumérico o una epsilon, crear un nuevo estado y agregar una transición al siguiente estado
-        if re.match(r'[\wɛ]', token):
-            state = State()
-            state.add_transition(token, State())
-            stack.append(NFA(state, {state}))
-        # Si el token es una barra vertical, pop los dos últimos NFA's de la pila y alternarlos
-        elif token == '|':
-            nfa2 = stack.pop()
-            nfa1 = stack.pop()
-            stack.append(NFA.alternate(nfa1, nfa2))
-        # Si el token es un punto, pop los dos últimos NFA's de la pila y concatenarlos
-        elif token == '.':
-            nfa2 = stack.pop()
-            # Si la pila está vacía, agregar el segundo NFA a la pila y continuar
-            if len(stack) == 0:
-                stack.append(nfa2)
-                continue
-            nfa1 = stack.pop()
-            stack.append(NFA.concatenate(nfa1, nfa2))
-        # Si el token es un asterisco, pop el último NFA de la pila y aplicar la clausura de Kleene
-        elif token == '*':
-            nfa = stack.pop()
-            stack.append(NFA.kleene(nfa))
+class NFA:
+    """
+    Clase que representa un autómata finito no determinístico (NFA).
+    """
+    def __init__(self, start, end):
+        self.start = start
+        self.end = end
 
-    # Al final, la única cosa en la pila debería ser el NFA final
-    return stack.pop()
 
-def printNFA(nfa):
-    """Imprime el NFA"""
-    print("========NFA========")
-    print("Start state:", nfa.start_state)
-    print("\t Transitions:")
-    # Imprimir las transiciones de cada estado
-    for state in nfa.states:
-        # Imprimir las transiciones de cada símbolo
-        for symbol, next_states in state.transitions.items():
-            # Imprimir las transiciones de cada estado siguiente
-            for next_state in next_states:
-                print(f"\t {state} -- {symbol} --> {next_state}")
-        # Imprimir las transiciones epsilon
-        for epsilon_state in state.epsilon_transitions:
-            print(f"\t {state} -- ε --> {epsilon_state}")
+class ThompsonConstruction:
+    def __init__(self, regex):
+        itp = InfixToPostfix(regex)
+        self.postfix = str(itp)
+        # self.regex = regex
+        self.nfa = None
+        self.states_count = 0
+
+    def _create_nfa(self):
+        nfa_stack = []
+
+        for c in self.postfix:
+            if c.isalpha():
+                state1 = State(self.states_count)
+                state2 = State(self.states_count + 1)
+                state1.add_transition(c, state2)
+                nfa_stack.append((state1, state2))
+                self.states_count += 2
+            elif c == '|':
+                state1, state2 = nfa_stack.pop()
+                state3, state4 = nfa_stack.pop()
+                new_start_state = State(self.states_count)
+                new_accept_state = State(self.states_count + 1)
+                new_start_state.add_transition('ε', state3)
+                new_start_state.add_transition('ε', state1)
+                state2.add_transition('ε', new_accept_state)
+                state4.add_transition('ε', new_accept_state)
+                nfa_stack.append((new_start_state, new_accept_state))
+                self.states_count += 2
+            elif c == '*':
+                state1, state2 = nfa_stack.pop()
+                new_start_state = State(self.states_count)
+                new_accept_state = State(self.states_count + 1)
+                new_start_state.add_transition('ε', state1)
+                new_start_state.add_transition('ε', new_accept_state)
+                state2.add_transition('ε', state1)
+                state2.add_transition('ε', new_accept_state)
+                nfa_stack.append((new_start_state, new_accept_state))
+                self.states_count += 2
+            elif c == '.':
+                state1, state2 = nfa_stack.pop()
+                state3, state4 = nfa_stack.pop()
+                state3.add_transition('ε', state1)
+                nfa_stack.append((state3, state2))
+            else:
+                raise ValueError(f'Invalid character {c} in regex')
+
+        start_state, accept_state = nfa_stack.pop()
+        self.nfa = NFA(start_state, accept_state)
+
+    def create_nfa(self):
+        self._create_nfa()
+        return self.nfa
+
+    def __str__(self):
+        return f'{self.nfa}'
+    
+    def __repr__(self):
+        return f'{self.nfa}'
+    
+    def __len__(self):
+        return len(self.nfa)
+    
+    def __getitem__(self, index):
+        return self.nfa[index]
+    
+    def __setitem__(self, index, value):
+        self.nfa[index] = value
+
+def showAFN(nfa):
+    print("Transiciones:")
+    for state, transitions in nfa.transitions.items():
+        for symbol, next_state in transitions.items():
+            for next_state in next_state:
+                print(f'{state} -> {symbol} -> {next_state}')
+    print("Estado inicial:", nfa.start)
+    print("Estado final:", nfa.end)
+
+
+from toPostfix import InfixToPostfix
+
+def main(regex):
+    # chequear que este balanceada
+    # y convertirlo a su forma postfix
+    """
+    Construye un AFN a partir de una expresión regular.
+    """
+    # Crear objeto para expresión regular
+    # regex = input("Ingrese la expresión regular: ")
+    itp = InfixToPostfix(regex)
+
+    # Chequear que la expresión regular este balanceada
+    print("¿Expresión balanceada?", itp.isBalanced())
+
+    # Formatear la expresión regular
+    print("Expresion formateada:", itp.formatRegex())
+
+    # Convertir a postfix
+    print("Expresion en postfix:", itp)
+
+    # Crear el AFN
+    showAFN(ThompsonConstruction(itp).create_nfa())
+
+if __name__ == '__main__':
+    regex = input("Ingrese la expresión regular: ")
+    main(regex)

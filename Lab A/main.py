@@ -20,7 +20,7 @@ Especificación del funcionamiento del programa
 # print(infixToPostfix('0? (1? )? 0 ∗')) 
 # print(infixToPostfix('(a*|b*)c')) 
 # print(infixToPostfix('(b|b)*abb(a|b)*')) 
-# print(infixToPostfix('(a|ε)b(a+)c?'))
+# print(infixToPostfix('(a|ε)b(a+)c?'))  aaε|b*·cc*·|·b·ba·a·|
 # print(infixToPostfix('(a|b)*a(a|b)(a|b)'))
 
 
