@@ -95,23 +95,3 @@ class InfixToPostfix:
 
     def __str__(self):
         return self.postfix if self.postfix else self.postfixExp()
-
-
-
-# if __name__ == '__main__':
-#     # Ejemplos de expresiones regulares
-#     regex1 = 'a(a?b*|c+)b|baa'
-#     regex2 = '(b|b)*abb(a|b)*'
-#     regex3 = '(a*|b*)c'
-    
-#     # Crear objeto para expresión regular
-#     itp = InfixToPostfix(regex3)
-
-#     # Chequear que la expresión regular este balanceada
-#     print("¿Expresión balanceada?", itp.isBalanced())
-
-#     # Formatear la expresión regular
-#     print("Expresion formateada:", itp.formatRegex())
-
-#     # Convertir a postfix
-#     print("Expresion en postfix:", itp)

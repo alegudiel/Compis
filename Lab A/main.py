@@ -22,13 +22,15 @@ Especificación del funcionamiento del programa
 # print(infixToPostfix('(b|b)*abb(a|b)*')) 
 # print(infixToPostfix('(a|ε)b(a+)c?'))  aaε|b*·cc*·|·b·ba·a·|
 # print(infixToPostfix('(a|b)*a(a|b)(a|b)'))
+#     # Ejemplos de expresiones regulares
+#     regex1 = 'a(a?b*|c+)b|baa'
+#     regex2 = '(b|b)*abb(a|b)*'
+#     regex3 = '(a*|b*)c'
 
 
 # Importamos las librerías necesarias.
-from validations import checkForErrors
-from formating import cleanRegex
-from toPostfix import infixToPostfix
-from buildAFN import thompsonConstruction, printNFA
+from toPostfix import InfixToPostfix
+from buildAFN import ThompsonConstruction, showAFN
 from showAFNGraph import nfaGraph
 
 # Pedimos la expresión regular (regex) al usuario.
@@ -36,42 +38,20 @@ print('---------------------------------------------------')
 r = input("Ingrese la expresión regular: ")
 
 # Revisamos que la expresión regular sea válida.
-checkedExp = checkForErrors(r)
-if checkedExp == []:
-    print('---------------------------------------------------')
-    print("--->La expresión regular ingresada es válida...")
-    print('---------------------------------------------------')
-    # Si no hay errores, procedemos a formatear la expresión regular.
-    print("--->La expresión regular se está formateando...")
-    cleanedExp = cleanRegex(r)
-    print('---------------------------------------------------')
-    print("La expresión regular formateada es:", cleanedExp)
-    print('---------------------------------------------------')
+# Convertimos a postfix una vez se haya formateado la expresión regular.
+print('--->Convertimos a postfix...')
+newExp = InfixToPostfix(r)
+print('---------------------------------------------------')
 
-    # Convertimos a postfix una vez se haya formateado la expresión regular.
-    print("--->Convertimos a postfix...")
-    postfixValue = infixToPostfix(cleanedExp)
-    print('---------------------------------------------------')
-    print("La expresión regular en postfix es:", postfixValue)
-    print('---------------------------------------------------')
+# Convertimos de postfix a NFA
+print('--->Convertimos de postfix a NFA...')
+postfixValue = ThompsonConstruction(newExp)
+print('---------------------------------------------------')
 
-    # Convertimos de postfix a NFA
-    print('--->Convertimos de postfix a NFA...')
-    nfaValue = thompsonConstruction(postfixValue)
-    
-    # Mostramos el NFA
-    print('---------------------------------------------------')
-    printNFA(nfaValue)
-    
-    # Mostramos el grafo del NFA
-    print('---------------------------------------------------')
-    print("--->Convertimos el NFA a un grafo...")
-    print('---------------------------------------------------')
-    nfaGraph(nfaValue)
+# Mostramos las transiciones del NFA
+print('--->Mostramos las transiciones del NFA...')
+showAFN(postfixValue)
 
-
-else:
-    print("Los errores encontrados son ---> ", checkedExp)
-
-
-
+# Mostramos el grafo del NFA
+print('--->Mostramos el grafo del NFA...')
+# nfaGraph(postfixValue)
