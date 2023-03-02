@@ -26,13 +26,19 @@ class State:
         closure = {self}
         queue = deque([self])
         while queue:
+            if not queue:
+                break
             current_state = queue.popleft()
             for epsilon_state in current_state.epsilon_transitions:
                 if epsilon_state not in closure:
                     closure.add(epsilon_state)
                     queue.append(epsilon_state)
         return closure
-    
+
+
+    """ Ayudan a mostrar el NFA en la consola, 
+        no son necesarios para la construcción del NFA
+    """
     def __str__(self):
         """Muestra el ID de este estado"""
         return f"State {self.id}"
@@ -41,43 +47,14 @@ class State:
         """Compara este estado con otro estado"""
         return self.id < other.id
     
-    # def is_start_state(self):
-    #     """Indica si este estado es el estado de inicio"""
-    #     return self.id == 0
+    def is_start_state(self):
+        """Indica si este estado es el estado de inicio"""
+        return self.id == 0
     
     def is_final_state(self):
         """Indica si este estado es un estado final"""
         return len(self.transitions) == 0
     
-    def get_transitions(self, visited_states=set()):
-        """Devuelve las transiciones salientes de este estado que no regresan a un estado previo ni sobre sí mismo"""
-        transitions = []
-        for symbol, states in self.transitions.items():
-            for state in states:
-                if state not in visited_states and state != self:
-                    transitions.append((symbol, state))
-        return transitions
-    
-    def get_epsilon_transitions(self, visited_states=set()):
-        """Devuelve las transiciones epsilon salientes de este estado a estados que no han sido visitados antes en el camino actual"""
-        epsilon_transitions = []
-        for state in self.epsilon_transitions:
-            if state not in visited_states:
-                epsilon_transitions.append(state)
-        return epsilon_transitions
-    
-    def get_acceptance_states(self):
-        """Devuelve los estados de aceptación alcanzables desde este estado"""
-        acceptance_states = []
-        queue = deque([self])
-        while queue:
-            current_state = queue.popleft()
-            if current_state.is_final_state():
-                acceptance_states.append(current_state)
-            for symbol, states in current_state.transitions.items():
-                for state in states:
-                    queue.append(state)
-        return acceptance_states
 
 class NFA:
     """Clase para representar un NFA"""
@@ -194,10 +171,12 @@ def thompsonConstruction(postfixVal):
         # Si el token es un punto, pop los dos últimos NFA's de la pila y concatenarlos
         elif token == '.':
             nfa2 = stack.pop()
-            # Si la pila está vacía, agregar el segundo NFA a la pila y continuar
+            # Si la pila está vacía, 
+            # agregar el segundo NFA a la pila y continuar
+            # por este error el programa no termina de llegar al estado final
             if len(stack) == 0:
                 stack.append(nfa2)
-                continue
+                continue 
             nfa1 = stack.pop()
             stack.append(NFA.concatenate(nfa1, nfa2))
         # Si el token es un asterisco, pop el último NFA de la pila y aplicar la clausura de Kleene
@@ -223,6 +202,8 @@ def printNFA(nfa):
                 # Imprimir las transiciones epsilon
             for epsilon_state in state.epsilon_transitions:
                 print(f"\t {state} -- ε --> {epsilon_state}")
+    # print("Final states:", nfa.final_states)
+    print("===================")
 
 def nfaGraph(nfa):
     dot = Digraph(comment='NFA')
@@ -244,8 +225,11 @@ def nfaGraph(nfa):
         for symbol, next_states in state.transitions.items():
             for next_state in next_states:
                 dot.edge(str(state.id), str(next_state.id), label=symbol)
-        for epsilon_state in state.epsilon_transitions:
-            dot.edge(str(state.id), str(epsilon_state.id), label='ε')
+
+            for epsilon_state in state.epsilon_transitions:
+                dot.edge(str(state.id), str(epsilon_state.id), label='ε')
+                if epsilon_state in nfa.final_states:
+                    dot.node(str(epsilon_state.id), shape='doublecircle')
 
     dot.format = 'png'
     dot.render('./Graphs/nfa_graph', view=True)
