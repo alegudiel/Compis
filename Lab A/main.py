@@ -30,28 +30,34 @@ Especificación del funcionamiento del programa
 
 # Importamos las librerías necesarias.
 from toPostfix import InfixToPostfix
-from buildAFN import ThompsonConstruction, showAFN
-from showAFNGraph import nfaGraph
+from buildAFN import ThompsonConstruction as tc
 
 # Pedimos la expresión regular (regex) al usuario.
 print('---------------------------------------------------')
 r = input("Ingrese la expresión regular: ")
+print('---------------------------------------------------')
 
 # Revisamos que la expresión regular sea válida.
 # Convertimos a postfix una vez se haya formateado la expresión regular.
-print('--->Convertimos a postfix...')
-newExp = InfixToPostfix(r)
+print('--->Convertimos de infix a postfix...')
+postfixVal = InfixToPostfix(r)
+print('El postfix es: ', postfixVal)
 print('---------------------------------------------------')
 
 # Convertimos de postfix a NFA
 print('--->Convertimos de postfix a NFA...')
-postfixValue = ThompsonConstruction(newExp)
+thompson = tc(r)
+# print(thompson) solo lo devuevle como direccion en memoria
+nfa = thompson.build_nfa()
+
 print('---------------------------------------------------')
 
 # Mostramos las transiciones del NFA
 print('--->Mostramos las transiciones del NFA...')
-showAFN(postfixValue)
+tc.visualizeNFA(nfa)
+
+print('---------------------------------------------------')
 
 # Mostramos el grafo del NFA
 print('--->Mostramos el grafo del NFA...')
-# nfaGraph(postfixValue)
+# nfaGraph(nfa)

@@ -30,28 +30,32 @@ class InfixToPostfix:
         return not stack
 
     def formatRegex(self):
+        regex_str = str(self.regex)
+        if not self.regex:
+            return ''
+
         allOperators = {'*', '+', '.', '|'}
         binOperators = {'|'}
         res = ''
 
         i = 0
-        while i < len(str(self.regex)):
-            c1 = self.regex[i]
+        while i < len(regex_str):
+            c1 = regex_str[i]
 
-            if i+1 < len(self.regex):
-                c2 = self.regex[i+1]
+            if i+1 < len(regex_str):
+                c2 = regex_str[i+1]
             else:
                 c2 = ''
 
             if c2 == '?':
                 res += f'({c1}|ε)'
-                i += 1  # saltar el siguiente caracter
+                i += 1 
             elif self.isOperand(c1) and c2 == '+':
-                res += c1 + '.' + c1
-                i += 1  # saltar el siguiente caracter
+                res += c1 + c1
+                i += 1 
             else:
                 res += c1
-                if c1 != '(' and c2 != ')' and c2 not in allOperators and c1 not in binOperators and i != len(self.regex)-1:
+                if c1 != '(' and c2 != ')' and c2 not in allOperators and c1 not in binOperators and i != len(regex_str)-1:
                     res += '.'
                 if res[-1] == '.' and c2 == '(':
                     res = res[:-1]
@@ -95,3 +99,7 @@ class InfixToPostfix:
 
     def __str__(self):
         return self.postfix if self.postfix else self.postfixExp()
+
+# if __name__ == '__main__':
+#     regex = InfixToPostfix('(a|b)*c').postfixExp()
+#     print(regex)

@@ -1,41 +1,62 @@
 from toPostfix import InfixToPostfix
+from collections import deque
+from graphviz import Digraph
 
 class State:
-    """
-    Clase que representa un estado en el autómata finito.
-    """
     def __init__(self, transitions=None, is_final=False):
-        self.transitions = transitions or {}
+        if transitions is None:
+            transitions = {}
+        self.transitions = transitions
+        self.epsilon_closure = set()
         self.is_final = is_final
-    
-    def add_transition(self, symbol, state):
-        """
-        Añade una transición al estado.
-        """
-        if isinstance(symbol, int):
-            symbol = (symbol,)
-        if symbol in self.transitions:
-            self.transitions[symbol].add(state)
-        else:
-            self.transitions[symbol] = {state}
+
+    def add_transition(self, symbol, next_states):
+        if isinstance(next_states, State):
+            next_states = [next_states]
+        if not isinstance(self.transitions.get(symbol), dict):
+            self.transitions[symbol] = {}
+        for state in next_states:
+            self.transitions[symbol].setdefault(state, set())
+            self.transitions[symbol][state].add(state)
+            if state.is_final:
+                self.is_final = True
+
 
     def __str__(self):
         transitions_str = ""
-        for symbol, states in self.transitions.items():
-            states_str = ",".join(str(s) for s in states)
-            transitions_str += f"{symbol} -> {states_str}\n"
-        return f"State {id(self)}:\n{transitions_str.strip()}\n{'Final' if self.is_final else ''}"
+        for symbol, next_states in self.transitions.items():
+            next_states_str = ", ".join(str(ns) for ns in next_states)
+            transitions_str += f"{symbol} -> {next_states_str}\n"
+        epsilon_str = ", ".join(str(s) for s in self.epsilon_closure)
+        return f"State {id(self)} ({'Final' if self.is_final else 'Non-final'}):\n{transitions_str.strip()}\n{'ε -> ' + epsilon_str if epsilon_str else ''}"
+
+
+
 
 class NFA:
-    """
-    Clase que representa un autómata finito no determinístico (NFA).
-    """
-    def __init__(self, start, end):
-        self.start = start
-        self.end = end
+    def __init__(self, start_state, final_states):
+        self.start_state = start_state
+        self.final_states = set([final_states])
 
-    def __str__(self):
-        return f"Start: {self.start}\nEnd: {self.end}"
+        self.states = {start_state} | self.final_states
+        self.transitions = {start_state: {}}
+        self.epsilon = {start_state: set()}
+
+    def add_transition(self, from_state, to_state, symbol=None):
+        if from_state not in self.states:
+            raise ValueError(f"State {from_state} is not in the NFA.")
+        if to_state not in self.states:
+            raise ValueError(f"State {to_state} is not in the NFA.")
+        if symbol in self.epsilon[from_state]:
+            raise ValueError("Epsilon transitions cannot have a symbol.")
+        if symbol is None:
+            self.epsilon[from_state].add(to_state)
+        else:
+            if symbol not in self.transitions[from_state]:
+                self.transitions[from_state][symbol] = set()
+            self.transitions[from_state][symbol].add(to_state)
+
+from graphviz import Digraph
 
 class ThompsonConstruction:
     def __init__(self, regex):
@@ -48,59 +69,83 @@ class ThompsonConstruction:
         nfa_stack = []
 
         for c in self.postfix:
-            if c.isalpha():
-                state1 = State(self.states_count)
-                state2 = State(self.states_count + 1)
-                state1.add_transition(c, state2)
-                nfa_stack.append((state1, state2))
+            if not nfa_stack and c != '*':
+                empty_nfa = NFA(State(self.states_count), State(self.states_count + 1))
                 self.states_count += 2
-
-            elif c == '|':
-                state1, state2 = nfa_stack.pop()
-                state3, state4 = nfa_stack.pop()
-                new_start_state = State(self.states_count)
-                new_accept_state = State(self.states_count + 1)
-                new_start_state.add_transition('ε', state3)
-                new_start_state.add_transition('ε', state1)
-                state2.add_transition('ε', new_accept_state)
-                state4.add_transition('ε', new_accept_state)
-                nfa_stack.append((new_start_state, new_accept_state))
-                self.states_count += 2
-
+                empty_nfa.start_state.add_transition(c, empty_nfa.final_states)
+                nfa_stack.append(empty_nfa)
             elif c == '*':
-                state1, state2 = nfa_stack.pop()
-                new_start_state = State(self.states_count)
-                new_accept_state = State(self.states_count + 1)
-                new_start_state.add_transition('ε', state1)
-                new_start_state.add_transition('ε', new_accept_state)
-                state2.add_transition('ε', state1)
-                state2.add_transition('ε', new_accept_state)
-                nfa_stack.append((new_start_state, new_accept_state))
+                nfa = nfa_stack.pop()
+                start, end = State(self.states_count), State(self.states_count + 1)
                 self.states_count += 2
-
+                start.add_transition('ε', [nfa.start_state, end])
+                nfa.final_states.add(end)
+                nfa.final_states.add(start)
+                nfa_stack.append(NFA(start, end))
+            elif c == '|':
+                nfa2, nfa1 = nfa_stack.pop(), nfa_stack.pop()
+                start, end = State(self.states_count), State(self.states_count + 1)
+                self.states_count += 2
+                start.add_transition('ε', [nfa1.start_state, nfa2.start_state])
+                nfa1.final_states.add(end)
+                nfa2.final_states.add(end)
+                nfa_stack.append(NFA(start, end))
             elif c == '.':
-                state1, state2 = nfa_stack.pop()
-                state3, state4 = nfa_stack.pop()
-                state3.add_transition('ε', state1)
-                nfa_stack.append((state3, state2))
+                nfa2, nfa1 = nfa_stack.pop(), nfa_stack.pop()
+                nfa1.final_states.add(nfa2.start_state)
+                nfa1.final_states.update(nfa2.final_states)
+                nfa1.transitions.update(nfa2.transitions)
+                nfa_stack.append(nfa1)
             else:
-                raise ValueError(f'Invalid character {c} in regex')
+                start, end = State(self.states_count), State(self.states_count + 1)
+                self.states_count += 2
+                start.add_transition(c, end)
+                nfa_stack.append(NFA(start, end))
 
-        start_state, accept_state = nfa_stack.pop()
-        self.nfa = NFA(start_state, accept_state)
+        if len(nfa_stack) != 1:
+            raise ValueError("Invalid regular expression.")
 
-    def __str__(self):
-        return f'{self.nfa}'
-    
-    def __repr__(self):
-        return f'{self.nfa}'
+        nfa = nfa_stack.pop()
+        for state in nfa.states:
+            state.epsilon_closure = self._epsilon_closure(state)
 
-def showAFN(nfa):
-    print("Transiciones:")
-    for state, transitions in nfa.transitions.items():
-        for symbol, next_state in transitions.items():
-            for next_state in next_state:
-                print(f'{state} -> {symbol} -> {next_state}')
-    print("Estado inicial:", nfa.start)
-    print("Estado final:", nfa.end)
+        self.nfa = nfa
 
+    def _epsilon_closure(self, state):
+        closure = set()
+        visited = set()
+        stack = [state]
+        while stack:
+            s = stack.pop()
+            if s in visited:
+                continue
+            visited.add(s)
+            closure.add(s)
+            for t in s.epsilon_closure:
+                stack.append(t)
+        return closure
+
+    def to_graphviz(self, filename=None):
+        dot = Digraph(comment='Thompson Construction')
+        for state in self.nfa.states:
+            label = f"{id(state)}\n{state.is_final}"
+            if state == self.nfa.start_state:
+                dot.node(str(id(state)), label=label, shape='doublecircle')
+            else:
+                dot.node(str(id(state)), label=label, shape='circle')
+            for symbol, next_states in state.transitions.items():
+                for next_state in next_states:
+                    dot.edge(str(id(state)), str(id(next_state)), label=symbol)
+            for next_state in state.epsilon_closure:
+                dot.edge(str(id(state)), str(id(next_state)), label='ε')
+        if filename:
+            dot.render(filename, view=True)
+        else:
+            return dot
+
+
+if __name__ == '__main__':
+    regex = "ab|c."
+    tc = ThompsonConstruction(regex)
+    tc._create_nfa()
+    print(tc.to_graphviz())
