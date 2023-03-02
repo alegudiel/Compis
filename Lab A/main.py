@@ -28,50 +28,47 @@ Especificación del funcionamiento del programa
 from validations import checkForErrors
 from formating import cleanRegex
 from toPostfix import infixToPostfix
-from buildAFN import thompsonConstruction, printNFA
-from showAFNGraph import nfaGraph
+from buildAFN import thompsonConstruction, printNFA, nfaGraph
 
 # Pedimos la expresión regular (regex) al usuario.
 print('---------------------------------------------------')
 r = input("Ingrese la expresión regular: ")
 
 # Revisamos que la expresión regular sea válida.
-checkedExp = checkForErrors(r)
-if checkedExp == []:
-    print('---------------------------------------------------')
-    print("--->La expresión regular ingresada es válida...")
-    print('---------------------------------------------------')
+# checkedExp = checkForErrors(r)
+# if checkedExp == []:
+print('---------------------------------------------------')
+print("--->La expresión regular ingresada es válida...")
+print('---------------------------------------------------')
     # Si no hay errores, procedemos a formatear la expresión regular.
-    print("--->La expresión regular se está formateando...")
-    cleanedExp = cleanRegex(r)
-    print('---------------------------------------------------')
-    print("La expresión regular formateada es:", cleanedExp)
-    print('---------------------------------------------------')
+print("--->La expresión regular se está formateando...")
+cleanedExp = cleanRegex(r)
+print('---------------------------------------------------')
+print("La expresión regular formateada es:", cleanedExp)
+print('---------------------------------------------------')
 
     # Convertimos a postfix una vez se haya formateado la expresión regular.
-    print("--->Convertimos a postfix...")
-    postfixValue = infixToPostfix(cleanedExp)
-    print('---------------------------------------------------')
-    print("La expresión regular en postfix es:", postfixValue)
-    print('---------------------------------------------------')
+print("--->Convertimos a postfix...")
+postfixValue = infixToPostfix(cleanedExp)
+print('---------------------------------------------------')
+print("La expresión regular en postfix es:", postfixValue)
+print('---------------------------------------------------')
 
     # Convertimos de postfix a NFA
-    print('--->Convertimos de postfix a NFA...')
-    nfaValue = thompsonConstruction(postfixValue)
+print('--->Convertimos de postfix a NFA...')
+nfaValue = thompsonConstruction(postfixValue)
     
     # Mostramos el NFA
-    print('---------------------------------------------------')
-    printNFA(nfaValue)
+print('---------------------------------------------------')
+printNFA(nfaValue)
     
     # Mostramos el grafo del NFA
-    print('---------------------------------------------------')
-    print("--->Convertimos el NFA a un grafo...")
-    print('---------------------------------------------------')
-    nfaGraph(nfaValue)
+print('---------------------------------------------------')
+print("--->Convertimos el NFA a un grafo...")
+print('---------------------------------------------------')
+nfaGraph(nfaValue)
 
 
-else:
-    print("Los errores encontrados son ---> ", checkedExp)
-
+# else: print("Los errores encontrados son ---> ", checkedExp)
 
 
