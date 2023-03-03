@@ -1,14 +1,6 @@
-# This file contains the functions that validate the regular expression    
-def isBalanced(self):
-    stack = []
-    for char in self.regex:
-        if char == '(' or char == '[' or char == '{' :
-            stack.append(char)
-        elif char == ')' or char == ']' or char == '}':
-            if not stack:
-                return False
-            stack.pop()
-    return not stack
+"""
+Funciones de validación de datos del regex ingresado por el usuario
+"""
 
 def hasUnbalanced(r, open_char, close_char):
     stack = []
@@ -32,9 +24,7 @@ def checkForErrors(r):
         errors.append('La expresión regular tiene corchetes desbalanceados.')
     if hasUnbalanced(r, '{', '}'):
         errors.append('La expresión regular tiene llaves desbalanceadas.')
-
     if hasOperatorAtStart(r):
         errors.append('La expresión regular tiene operadores al inicio.')
-    
 
     return errors
