@@ -98,7 +98,7 @@ def showPostfix(r):
         
         print("-----------------------------------------")
         print("\nLa expresión esta balanceada y es válida") 
-
+        print("Expresión balanceada: ", addImplicitConcatenation(r))
         print("-----------------------------------------")
         # Convertir la expresión regular a notación posfija
         postfix = infixToPostfix(r)

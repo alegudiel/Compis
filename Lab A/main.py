@@ -25,9 +25,8 @@ Especificación del funcionamiento del programa
 
 
 # Importamos las librerías necesarias.
-from validations import checkForErrors
 from toPostfix import showPostfix
-from buildAFN import thompsonConstruction
+from buildAFN import NFA, drawNFA
 from showThings import printNFA, nfaGraph
 
 # Pedimos la expresión regular (regex) al usuario.
@@ -36,23 +35,12 @@ print('-----------------------------------------')
 
 # Pasamos el regex a postfix
 # Aqui mismo se valida y formatea
-showPostfix(r)
+postfixVal = showPostfix(r)
+
+
 
 # Convertimos de postfix a NFA
-#     print('--->Convertimos de postfix a NFA...')
-#     nfaValue = thompsonConstruction(cleanedExp)
-        
-#         # Mostramos el NFA
-#     print('---------------------------------------------------')
-#     printNFA(nfaValue)
-        
-#         # Mostramos el grafo del NFA
-#     print('---------------------------------------------------')
-#     print("--->Convertimos el NFA a un grafo...")
-#     print('---------------------------------------------------')
-#     nfaGraph(nfaValue)
-
-
-# else: print("Los errores encontrados son ---> ", checkedExp)
-
+nfa = NFA(r)
+nfa.show()
+drawNFA(nfa)
 
