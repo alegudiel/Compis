@@ -2,7 +2,7 @@
 
 ## Objetivos
 * Generales
-    o mplementación de algoritmos básicos de autómatas finitos y expresiones regulares.
+    o Implementación de algoritmos básicos de autómatas finitos y expresiones regulares.
     o Desarrollar la base de la implementación del generador de analizadores léxicos.
 
 * Específicos
